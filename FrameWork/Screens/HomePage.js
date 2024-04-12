@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   homePageBtn: {
     marginVertical: 10,
-    padding: 20,
+    padding: 21,
     borderRadius: 20,
     backgroundColor: Theme.colors.primary
   },
