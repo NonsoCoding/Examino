@@ -92,6 +92,10 @@ async function logout(params) {
             onChangeText={(text)=> setFirstName(text.trim())}
           />
         </View>
+        <TouchableOpacity style={{padding: 13, alignItems: "center", backgroundColor: Theme.colors.primary, marginTop: 20, borderRadius: 8}} onPress={editProfile}>
+          <Text style={{fontFamily: Theme.fonts.text800, color: "white"}}>Update Info</Text>
+        </TouchableOpacity>
+
         <View style={{borderTopWidth: 0.5, borderColor: "#808080", paddingTop: 10, marginTop: 10}}>
           <Text style={{fontFamily: Theme.fonts.text800, color: Theme.colors.primary}}>Leave empty if you don't wanna change password</Text>
         </View>
@@ -127,8 +131,8 @@ async function logout(params) {
             <Ionicons name={comfirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'} size={20} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={{padding: 13, alignItems: "center", backgroundColor: Theme.colors.primary, marginTop: 20, borderRadius: 8}} onPress={editProfile}>
-          <Text style={{fontFamily: Theme.fonts.text800, color: "white"}}>Update</Text>
+        <TouchableOpacity style={{padding: 13, alignItems: "center", backgroundColor: Theme.colors.primary, marginTop: 20, borderRadius: 8}} >
+          <Text style={{fontFamily: Theme.fonts.text800, color: "white"}}>Update Password</Text>
         </TouchableOpacity>
         <Modal
                 visible={modalVisibility}
