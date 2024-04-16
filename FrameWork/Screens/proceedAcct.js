@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { AppContext } from "../components/Globalvariables";
 import { authentication, db } from "../Firebase/settings";
 import { Theme } from "../components/Theme";
@@ -26,9 +26,9 @@ export function ProceedCreateAcct({ navigation }) {
     setDate(currentDate);
   };
 
-  const showDatePicked = () => {
-    setShowDatePicker(true);
-  }
+  // const showDatePicked = () => {
+  //   setShowDatePicker(true);
+  // }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -94,10 +94,10 @@ export function ProceedCreateAcct({ navigation }) {
                     />
                     <Text style={[styles.error, { display: props.touched.LastName && props.errors.LastName ? "flex" : "none" }]}>{props.errors.LastName}</Text>
                     <Text style={styles.TextInputText}>Date of Birth</Text>
-                    <TouchableOpacity onPress={showDatePicked} style={{ padding: 18, backgroundColor: Theme.colors.primary, alignItems: "center", borderRadius: 8, marginVertical: 10 }}>
+                    {/* <TouchableOpacity onPress={showDatePicked} style={{ padding: 18, backgroundColor: Theme.colors.primary, alignItems: "center", borderRadius: 8, marginVertical: 10 }}>
                       <Text>Show Date Picker</Text>
-                    </TouchableOpacity>
-                    {showDatePicker && (
+                    </TouchableOpacity> */}
+                    {/* {showDatePicker && (
                       <DateTimePicker
                         testID="dateTimePicker"
                         value={date}
@@ -105,7 +105,7 @@ export function ProceedCreateAcct({ navigation }) {
                         display="default"
                         onChange={onChange}
                       />
-                    )}
+                    )} */}
                     <TouchableOpacity style={styles.btn} onPress={props.handleSubmit}>
                       <Text style={{ fontFamily: Theme.fonts.text800, fontSize: 18, color: "white" }}>Continue</Text>
                     </TouchableOpacity>

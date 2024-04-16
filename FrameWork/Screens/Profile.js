@@ -7,10 +7,19 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../Firebase/settings';
+import { authentication, db } from '../Firebase/settings';
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons"
+import { Formik } from 'formik'
+import * as yup from "yup"
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 
 
+const validationSchema = yup.object({
+  oldPassword: yup.string().required().min(6).max(20),
+  passwordConfirmation: yup.string().required(),
+  password: yup.string().required().min(6).max(20)
+      .oneOf([yup.ref('passwordConfirmation'), null], 'password must match')
+})
 export function Profile({navigation}) {
 
   const {userInfo, setPreloader, userUID} = useContext(AppContext)
@@ -19,6 +28,8 @@ export function Profile({navigation}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [modalVisibility, setModalVisibility] = useState(false);
+  const {email, setEmail} = useContext(AppContext)
+  // const [email, setEmail] = useState("")
 
 
   function togglePasswordVisibility() {
@@ -60,6 +71,41 @@ async function logout(params) {
   }, 2000);
 }
 
+async function updateUserPassword(oldPassword, newPassword) {
+  const user = authentication.currentUser;
+
+  if (user) {
+      // Reauthenticate the user
+      const credential = EmailAuthProvider.credential(user.email, oldPassword);
+
+      try {
+          await reauthenticateWithCredential(user, credential);
+          // Update the password
+          await updatePassword(user, newPassword);
+          Alert.alert("Success", "Password has been updated successfully");
+      } catch (error) {
+          // Handle errors
+          Alert.alert("Error", error.message);
+      }
+  } else {
+      Alert.alert("Error", "No user is currently signed in.");
+  }
+}
+
+// Handle Formik submission
+function handleFormikSubmit(values, { resetForm }) {
+  setPreloader(true)
+  updateUserPassword(values.oldPassword, values.password)
+  .then(() => {
+        setPreloader(false)
+          resetForm();
+      })
+      .catch((error) => {
+        setPreloader(false)
+          Alert.alert("Error", error.message);
+      });
+}
+
   return (
 <SafeAreaView style={{flex: 1}}>
     <View style={styles.container}>
@@ -99,6 +145,16 @@ async function logout(params) {
         <View style={{borderTopWidth: 0.5, borderColor: "#808080", paddingTop: 10, marginTop: 10}}>
           <Text style={{fontFamily: Theme.fonts.text800, color: Theme.colors.primary}}>Leave empty if you don't wanna change password</Text>
         </View>
+      <Formik
+      style={{ flex: 1 }}
+      initialValues={{ oldPassword: "", password: "", passwordConfirmation: "" }}
+      onSubmit={handleFormikSubmit}
+      validationSchema={validationSchema}
+      >
+        {(prop)=> {
+          return (
+            <View>
+
       <View style={styles.searchContainer}>
           <MaterialCommunityIcons
             name="key"
@@ -108,13 +164,18 @@ async function logout(params) {
           />
           <TextInput
             style={styles.searchInput}
-            placeholder="Password"
+            placeholder="Old Password"
             secureTextEntry={!passwordVisible}
+            onChangeText={prop.handleChange("oldPassword")}
+            onBlur={prop.handleBlur("oldPassword")}
+            value={prop.values.oldPassword}
           />
           <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
             <Ionicons name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} size={20} />
           </TouchableOpacity>
         </View>
+        <Text style={[styles.error, { display: prop.touched.oldPassword && prop.errors.oldPassword ? "flex" : "none" }]}>{prop.errors.oldPassword}</Text>
+
       <View style={styles.searchContainer}>
           <MaterialCommunityIcons
             name="key"
@@ -124,16 +185,41 @@ async function logout(params) {
           />
           <TextInput
             style={styles.searchInput}
-            placeholder="Comfirm Password"
+            placeholder="New Password"
             secureTextEntry={!comfirmPasswordVisible}
+            onChangeText={prop.handleChange("password")}
+            onBlur={prop.handleBlur("password")}
+            value={prop.values.password}
           />
           <TouchableOpacity onPress={toggleComfirmPasswordVisibility} style={styles.eyeIcon}>
             <Ionicons name={comfirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'} size={20} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={{padding: 13, alignItems: "center", backgroundColor: Theme.colors.primary, marginTop: 20, borderRadius: 8}} >
+        <View style={styles.searchContainer}>
+          <MaterialCommunityIcons
+            name="key"
+            size={30}
+            color="#555"
+            style={styles.searchIcon}
+          />
+        <TextInput
+        placeholder='Comfirm Password'
+          style={styles.searchInput}
+          autoCapitalize="none"
+          secureTextEntry
+          onChangeText={prop.handleChange("passwordConfirmation")}
+          onBlur={prop.handleBlur("passwordConfirmation")}
+          value={prop.values.passwordConfirmation}
+          />
+          </View>
+          <Text style={[styles.error, { display: prop.touched.password && prop.errors.password ? "flex" : "none" }]}>{prop.errors.password}</Text>
+        <TouchableOpacity style={{padding: 13, alignItems: "center", backgroundColor: Theme.colors.primary, marginTop: 20, borderRadius: 8}} onPress={prop.handleSubmit}>
           <Text style={{fontFamily: Theme.fonts.text800, color: "white"}}>Update Password</Text>
         </TouchableOpacity>
+            </View>
+          )
+        }}
+      </Formik>
         <Modal
                 visible={modalVisibility}
                 animationType="slide"

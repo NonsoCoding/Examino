@@ -28,8 +28,9 @@ import { db } from "../Firebase/settings";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 const CarouselLinks = [
-  "https://images.pexels.com/photos/301926/pexels-photo-301926.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/301920/pexels-photo-301920.jpeg?auto=compress&cs=tinysrgb&w=600",
+  "https://images.pexels.com/photos/1205651/pexels-photo-1205651.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/901962/pexels-photo-901962.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+  "https://images.pexels.com/photos/10604063/pexels-photo-10604063.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
 ];
 
 export const screenwidth = Dimensions.get("screen").width;
@@ -76,6 +77,7 @@ function Home({ navigation }) {
       <View style={styles.container}>
         {/* <Text style={{fontFamily: 'LondrinaSolid_100Thin'}}>hello</Text> */}
         <View style={{ flex: 1 }}>
+          <View style={{alignItems: "center"}}>
           <Carousel
             loop
             width={screenwidth}
@@ -101,6 +103,7 @@ function Home({ navigation }) {
               </View>
             )}
           />
+          </View>
         <Text style={{fontFamily: Theme.fonts.text900, fontSize: 25, marginTop: 15}}>Hi, {userInfo.firstName + " " + userInfo.lastName}</Text>
         <Text style={{fontFamily: Theme.fonts.text800}}>Select Exam Body</Text>
         </View>
@@ -130,7 +133,7 @@ function Home({ navigation }) {
                 <Text style={[styles.TextHead, { fontWeight: "600" }]}> N.E.C.O.</Text>
                 <Text style={[styles.Text, { fontSize: 10 }]}>
                   {" "}
-                  West African Examination Council
+                  National Examinations Council
                 </Text>
               </View>
             </View>
@@ -143,9 +146,14 @@ function Home({ navigation }) {
               />
               <View>
                 <Text style={[styles.TextHead, { fontWeight: "600" }]}> J.A.M.B.</Text>
+                
                 <Text style={[styles.Text, { fontSize: 10 }]}>
                   {" "}
-                  West African Examination Council
+                  Joint Admissions and Matriculation
+                </Text>
+                <Text style={[styles.Text, { fontSize: 10 }]}>
+                  {" "}
+                  Board
                 </Text>
               </View>
             </View>
@@ -192,12 +200,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: Platform.OS == "android" ? StatusBar.currentHeight : null,
-    padding: 20,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    padding: 10
+    
   },
   homePageBtn: {
     marginVertical: 10,
-    padding: 21,
+    padding: 20,
     borderRadius: 20,
     backgroundColor: Theme.colors.primary
   },
